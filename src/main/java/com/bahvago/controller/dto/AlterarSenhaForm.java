@@ -14,7 +14,10 @@ public class AlterarSenhaForm {
 
     @NotBlank(message = "A nova senha e obrigatoria")
     @Size(min = 8, max = 72, message = "A nova senha deve ter entre 8 e 72 caracteres")
-
+    @Pattern(
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).+$",
+        message = "A nova senha deve conter letra maiuscula, minuscula, numero e caractere especial"
+    )
     private String novaSenha;
 
     @NotBlank(message = "Confirme a nova senha")
