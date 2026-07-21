@@ -15,8 +15,13 @@ public class AvaliacaoService {
     @Autowired
     private AvaliacaoRepository avaliacaoRepository;
 
+    @Autowired
+    private com.bahvago.repository.HotelRepository hotelRepository;
+
     public Avaliacao criarAvaliacao(Avaliacao avaliacao) {
-        return avaliacaoRepository.save(avaliacao);
+        Avaliacao salva = avaliacaoRepository.save(avaliacao);
+        atualizarMediaHotel(avaliacao.getCodigoHotel());
+        return salva;
     }
 
     public Optional<Avaliacao> buscarPorId(Integer id) {
@@ -36,11 +41,16 @@ public class AvaliacaoService {
     }
 
     public Avaliacao atualizarAvaliacao(Avaliacao avaliacao) {
-        return avaliacaoRepository.save(avaliacao);
+        Avaliacao salva = avaliacaoRepository.save(avaliacao);
+        atualizarMediaHotel(avaliacao.getCodigoHotel());
+        return salva;
     }
 
     public void deletarAvaliacao(Integer id) {
-        avaliacaoRepository.deleteById(id);
+        avaliacaoRepository.findById(id).ifPresent(av -> {
+            avaliacaoRepository.deleteById(id);
+            atualizarMediaHotel(av.getCodigoHotel());
+        });
     }
 
     public Double calcularMediaAvaliacoes(Integer codigoHotel) {
@@ -60,5 +70,13 @@ public class AvaliacaoService {
                 id -> id,
                 id -> avaliacaoRepository.countByCodigoHotel(id)
             ));
+    }
+
+    private void atualizarMediaHotel(Integer codigoHotel) {
+        Double media = calcularMediaAvaliacoes(codigoHotel);
+        hotelRepository.findById(codigoHotel).ifPresent(hotel -> {
+            hotel.setAvaliacaoMedia(media);
+            hotelRepository.save(hotel);
+        });
     }
 }
