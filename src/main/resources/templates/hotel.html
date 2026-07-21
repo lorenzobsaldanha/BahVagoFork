@@ -102,80 +102,238 @@
                 <div class="hotel-section-box">
                     <div class="header">
                         <h2>Avaliações</h2>
-                        <button>Escrever avaliação</button>
+                        <button id="btnEscreverAvaliacao" th:attr="data-hotel-id=${hotel != null ? hotel.id : ''}"
+                            onclick="abrirModalAvaliacao(this)">
+                            Escrever avaliação
+                        </button>
                     </div>
-
-                    <div class="review">
-                        <div class="avatar">Mr</div>
+                    <div class="review" th:each="avaliacao : ${avaliacoes}" th:object="${avaliacao}">
+                        <div class="avatar" th:text="${#strings.substring(avaliacao.usuario.nome, 0, 1)}">A</div>
 
                         <div class="content">
                             <div class="top">
                                 <div>
-                                    <h3>Maria Silva</h3>
-                                    <div class="stars">★★★★★</div>
+                                    <h3 th:text="*{usuario.nome}">Usuário</h3>
+                                    <div class="stars"
+                                        th:text="${'★'.repeat(T(java.lang.Math).round(avaliacao.nota)) + '☆'.repeat(5 - T(java.lang.Math).round(avaliacao.nota))}">
+                                        ★★★★★</div>
                                 </div>
-
-                                <span class="date">2026-05-10</span>
+                                <span class="date"
+                                    th:text="${#temporals.format(avaliacao.data, 'yyyy-MM-dd')}">2026-05-10</span>
                             </div>
 
-                            <p>
-                                Experiência incrível! O hotel superou todas as expectativas.
-                                Quartos espaçosos, equipe atenciosa e localização perfeita.
+                            <p th:text="*{comentario}">Comentário</p>
+
+                            <p th:if="${avaliacao.resposta != null and !avaliacao.resposta.isEmpty()}"
+                                class="review-response">
+                                <strong>Resposta do hotel:</strong> <span th:text="*{resposta}"></span>
                             </p>
                         </div>
                     </div>
-
-                    <div class="review">
-                        <div class="avatar">J</div>
-
-                        <div class="content">
-                            <div class="top">
-                                <div>
-                                    <h3>João Santos</h3>
-                                    <div class="stars">★★★★☆</div>
-                                </div>
-
-                                <span class="date">2026-05-08</span>
-                            </div>
-
-                            <p>
-                                Muito bom! Apenas o café da manhã poderia ter mais opções,
-                                mas no geral recomendo.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="review">
-                        <div class="avatar">AC</div>
-
-                        <div class="content">
-                            <div class="top">
-                                <div>
-                                    <h3>Ana Costa</h3>
-                                    <div class="stars">★★★★★</div>
-                                </div>
-
-                                <span class="date">2026-05-05</span>
-                            </div>
-
-                            <p>
-                                Simplesmente perfeito! Voltarei com certeza.
-                            </p>
-                        </div>
-                    </div>
-
 
                     <div class="comment-card-item" th:if="${avaliacoes == null or avaliacoes.isEmpty()}">
                         <p class="comment-text-body">Ainda não há avaliações para este hotel.</p>
                     </div>
                 </div>
+
+
+                <div class="comment-card-item" th:if="${avaliacoes == null or avaliacoes.isEmpty()}">
+                    <p class="comment-text-body">Ainda não há avaliações para este hotel.</p>
+                </div>
             </div>
+        </div>
         </div>
 
         </div>
     </main>
 
     <script th:src="@{/js/script.js}" src="/js/script.js"></script>
+
+    <!-- ============================================================
+         MODAL: Escrever Avaliação
+         ============================================================ -->
+    <div id="modalAvaliacao" class="modal-overlay" style="display:none;" onclick="fecharModalBackdrop(event)">
+        <div class="modal-box">
+            <button class="modal-close" onclick="fecharModalAvaliacao()">&times;</button>
+            <h2 class="modal-title"><i class="fa-solid fa-star"></i> Escrever Avaliação</h2>
+
+            <div id="modalMensagem" class="modal-msg" style="display:none;"></div>
+
+            <div class="modal-stars" id="modalStars">
+                <span class="star" data-value="1">&#9733;</span>
+                <span class="star" data-value="2">&#9733;</span>
+                <span class="star" data-value="3">&#9733;</span>
+                <span class="star" data-value="4">&#9733;</span>
+                <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <p class="modal-stars-label" id="modalStarsLabel">Selecione uma nota</p>
+
+            <textarea id="modalComentario" class="modal-textarea"
+                placeholder="Compartilhe sua experiência (opcional, até 200 caracteres)" maxlength="200"
+                rows="4"></textarea>
+            <span class="modal-char-count"><span id="modalCharCount">0</span>/200</span>
+
+            <div class="modal-actions">
+                <button class="btn-text" onclick="fecharModalAvaliacao()">Cancelar</button>
+                <button id="btnEnviarAvaliacao" class="btn-primary" onclick="enviarAvaliacao()">Enviar
+                    avaliação</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        (function () {
+            const _usuarioLogado = /*[[${usuarioLogado}]]*/ false;
+            let _notaSelecionada = 0;
+            let _hotelIdAtual = null;
+
+            window.abrirModalAvaliacao = function (btn) {
+                if (!_usuarioLogado) {
+                    window.location.href = '/login';
+                    return;
+                }
+                _hotelIdAtual = btn ? btn.getAttribute('data-hotel-id') : null;
+                _notaSelecionada = 0;
+                document.getElementById('modalComentario').value = '';
+                document.getElementById('modalCharCount').textContent = '0';
+                document.getElementById('modalStarsLabel').textContent = 'Selecione uma nota';
+                const msg = document.getElementById('modalMensagem');
+                msg.style.display = 'none';
+                renderizarEstrelas(0);
+                document.getElementById('modalAvaliacao').style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            };
+
+            window.fecharModalAvaliacao = function () {
+                document.getElementById('modalAvaliacao').style.display = 'none';
+                document.body.style.overflow = '';
+            };
+
+            window.fecharModalBackdrop = function (event) {
+                if (event.target === document.getElementById('modalAvaliacao')) {
+                    window.fecharModalAvaliacao();
+                }
+            };
+
+            function renderizarEstrelas(nota) {
+                document.querySelectorAll('#modalStars .star').forEach(function (s, i) {
+                    s.classList.toggle('ativa', i < nota);
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const stars = document.querySelectorAll('#modalStars .star');
+                stars.forEach(function (star) {
+                    star.addEventListener('mouseover', function () { renderizarEstrelas(+star.dataset.value); });
+                    star.addEventListener('mouseout', function () { renderizarEstrelas(_notaSelecionada); });
+                    star.addEventListener('click', function () {
+                        _notaSelecionada = +star.dataset.value;
+                        renderizarEstrelas(_notaSelecionada);
+                        var labels = ['', 'Ruim', 'Regular', 'Bom', 'Muito bom', 'Excelente'];
+                        document.getElementById('modalStarsLabel').textContent = labels[_notaSelecionada];
+                    });
+                });
+
+                var textarea = document.getElementById('modalComentario');
+                if (textarea) {
+                    textarea.addEventListener('input', function () {
+                        document.getElementById('modalCharCount').textContent = textarea.value.length;
+                    });
+                }
+            });
+
+            window.enviarAvaliacao = async function () {
+                if (_notaSelecionada === 0) {
+                    mostrarMensagemModal('Por favor, selecione uma nota.', 'erro');
+                    return;
+                }
+
+                var comentario = document.getElementById('modalComentario').value.trim();
+                var btn = document.getElementById('btnEnviarAvaliacao');
+                btn.disabled = true;
+                btn.textContent = 'Enviando...';
+
+                var csrfToken = obterCookieInline('XSRF-TOKEN');
+                var headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+                if (csrfToken) headers['X-XSRF-TOKEN'] = decodeURIComponent(csrfToken);
+
+                var body = new URLSearchParams({ nota: _notaSelecionada, comentario: comentario });
+
+                try {
+                    var resp = await fetch('/hoteis/' + _hotelIdAtual + '/avaliacoes', {
+                        method: 'POST',
+                        headers: headers,
+                        body: body,
+                        credentials: 'same-origin'
+                    });
+
+                    var data = await resp.json();
+
+                    if (!resp.ok || data.erro) {
+                        mostrarMensagemModal(data.erro || 'Erro ao enviar avaliação.', 'erro');
+                    } else {
+                        mostrarMensagemModal('Avaliação enviada com sucesso!', 'sucesso');
+                        inserirAvaliacaoDinamica(data);
+                        setTimeout(function () { window.fecharModalAvaliacao(); }, 1800);
+                    }
+                } catch (err) {
+                    mostrarMensagemModal('Erro de conexão. Tente novamente.', 'erro');
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar avaliação';
+                }
+            };
+
+            function inserirAvaliacaoDinamica(data) {
+                // Remove estado "sem avaliações" se existir dentro da seção
+                var vazioDentro = document.querySelector('.hotel-section-box .comment-card-item');
+                if (vazioDentro) vazioDentro.remove();
+
+                var inicial = data.nomeUsuario ? data.nomeUsuario.charAt(0).toUpperCase() : '?';
+                var estrelasCheias = Math.round(data.nota);
+                var estrelasStr = '★'.repeat(estrelasCheias) + '☆'.repeat(5 - estrelasCheias);
+
+                var div = document.createElement('div');
+                div.className = 'review';
+                div.innerHTML =
+                    '<div class="avatar">' + inicial + '</div>' +
+                    '<div class="content">' +
+                    '<div class="top">' +
+                    '<div>' +
+                    '<h3>' + escapeHtml(data.nomeUsuario) + '</h3>' +
+                    '<div class="stars">' + estrelasStr + '</div>' +
+                    '</div>' +
+                    '<span class="date">' + data.data + '</span>' +
+                    '</div>' +
+                    '<p>' + escapeHtml(data.comentario) + '</p>' +
+                    '</div>';
+
+                var header = document.querySelector('.hotel-section-box .header');
+                if (header) header.insertAdjacentElement('afterend', div);
+            }
+
+            function mostrarMensagemModal(texto, tipo) {
+                var el = document.getElementById('modalMensagem');
+                el.textContent = texto;
+                el.className = 'modal-msg ' + tipo;
+                el.style.display = 'block';
+            }
+
+            function obterCookieInline(nome) {
+                var str = '; ' + document.cookie;
+                var partes = str.split('; ' + nome + '=');
+                if (partes.length === 2) return partes.pop().split(';').shift();
+                return null;
+            }
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            }
+        })();
+        /*]]>*/
+    </script>
 </body>
 
 </html>

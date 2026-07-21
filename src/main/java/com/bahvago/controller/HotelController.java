@@ -1,12 +1,16 @@
 package com.bahvago.controller;
 
+import com.bahvago.model.Avaliacao;
 import com.bahvago.model.Hotel;
 import com.bahvago.model.Oferta;
-import com.bahvago.service.HotelService;
 import com.bahvago.service.AvaliacaoService;
+import com.bahvago.service.HotelService;
 import com.bahvago.service.OfertaService;
 import com.bahvago.service.QuartoService;
+import com.bahvago.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +34,9 @@ public class HotelController {
 
     @Autowired
     private QuartoService quartoService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @GetMapping
     public String listarHoteis(Model model) {
@@ -58,19 +65,22 @@ public class HotelController {
     }
 
     @GetMapping("/{id}")
-    public String detalheHotel(@PathVariable Integer id, Model model) {
+    public String detalheHotel(@PathVariable Integer id, Model model, Authentication authentication) {
         Hotel hotel = hotelService.buscarPorId(id)
                 .orElseThrow(() -> new RuntimeException("Hotel não encontrado"));
         Double mediaAvaliacoes = avaliacaoService.calcularMediaAvaliacoes(id);
         
         List<com.bahvago.model.Quarto> quartos = quartoService.buscarPorHotel(id.longValue());
         boolean aceitaPet = quartos.stream().anyMatch(q -> Boolean.TRUE.equals(q.getAceitaPet()));
+        boolean usuarioLogado = authentication != null && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getName());
         
         model.addAttribute("hotel", hotel);
         model.addAttribute("mediaAvaliacoes", mediaAvaliacoes);
         model.addAttribute("avaliacoes", avaliacaoService.buscarPorHotel(id));
         model.addAttribute("quartos", quartos);
         model.addAttribute("aceitaPet", aceitaPet);
+        model.addAttribute("usuarioLogado", usuarioLogado);
         
         return "hotel";
     }
@@ -98,6 +108,41 @@ public class HotelController {
         hotelService.deletarHotel(id);
         redirectAttributes.addFlashAttribute("mensagem", "Hotel deletado com sucesso!");
         return "redirect:/hoteis";
+    }
+
+    @PostMapping("/{id}/avaliacoes")
+    @ResponseBody
+    public ResponseEntity<?> criarAvaliacao(@PathVariable Integer id,
+                                             @RequestParam Float nota,
+                                             @RequestParam(required = false) String comentario,
+                                             Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).body(Map.of("erro", "Você precisa estar logado para avaliar."));
+        }
+
+        try {
+            com.bahvago.model.Usuario usuario = usuarioService.buscarPorEmail(authentication.getName())
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+            Avaliacao avaliacao = Avaliacao.builder()
+                    .nota(nota)
+                    .comentario(comentario)
+                    .codigoHotel(id)
+                    .cpf(usuario.getCpf())
+                    .build();
+
+            Avaliacao salva = avaliacaoService.criarAvaliacao(avaliacao);
+            return ResponseEntity.ok(Map.of(
+                    "sucesso", true,
+                    "codigoAvaliacao", salva.getId(),
+                    "nomeUsuario", usuario.getNome(),
+                    "nota", salva.getNota(),
+                    "comentario", salva.getComentario() != null ? salva.getComentario() : "",
+                    "data", salva.getData().toString()
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("erro", "Não foi possível salvar a avaliação: " + e.getMessage()));
+        }
     }
 
     private Map<Integer, Oferta> mapOfertasPorHotel(List<Hotel> hoteis) {

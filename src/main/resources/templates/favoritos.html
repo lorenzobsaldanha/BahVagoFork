@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
 </head>
+
 <body>
 
     <header class="navbar">
@@ -16,25 +18,32 @@
                 <span class="logo-text">BahVago</span>
             </div>
             <nav class="nav-actions-logged">
-                <a th:href="@{/favoritos}" href="/favoritos" class="nav-icon-link active" title="Favoritos"><i class="fa-regular fa-heart"></i></a>
-                <a th:href="@{/usuarios/perfil}" href="/usuarios/perfil" class="nav-icon-link" title="Minha Conta"><i class="fa-regular fa-user"></i></a>
-                <button id="btnLogoutTop" class="btn-logout-icon" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                <a th:href="@{/favoritos}" href="/favoritos" class="nav-icon-link active" title="Favoritos"><i
+                        class="fa-regular fa-heart"></i></a>
+                <a th:href="@{/usuarios/perfil}" href="/usuarios/perfil" class="nav-icon-link" title="Minha Conta"><i
+                        class="fa-regular fa-user"></i></a>
+                <button id="btnLogoutTop" class="btn-logout-icon" title="Sair"><i
+                        class="fa-solid fa-arrow-right-from-bracket"></i></button>
             </nav>
         </div>
     </header>
 
     <main class="container fav-page-wrapper">
         <div class="fav-header">
-            <h1><i class="fa-regular fa-heart" style="color: var(--accent-blue); margin-right: 8px;"></i> Meus favoritos</h1>
-            <p id="favCount" th:text="${ofertasSalvas != null ? ofertasSalvas.size() + (ofertasSalvas.size() == 1 ? ' oferta salva' : ' ofertas salvas') : '0 ofertas salvas'}">0 ofertas salvas</p>
+            <h1><i class="fa-regular fa-heart" style="color: var(--accent-blue); margin-right: 8px;"></i> Meus favoritos
+            </h1>
+            <p id="favCount"
+                th:text="${ofertasSalvas != null ? ofertasSalvas.size() + (ofertasSalvas.size() == 1 ? ' oferta salva' : ' ofertas salvas') : '0 ofertas salvas'}">
+                0 ofertas salvas</p>
         </div>
 
         <div class="hotels-grid" id="favGrid" th:if="${ofertasSalvas != null and !ofertasSalvas.isEmpty()}">
             <div class="hotel-card" th:each="oferta : ${ofertasSalvas}"
-                 th:attr="data-codigo-oferta=${oferta.codigoOferta}">
+                th:attr="data-codigo-oferta=${oferta.codigoOferta}">
                 <div class="card-image-wrapper">
                     <a th:href="@{/hoteis/{id}(id=${oferta.codigoHotel})}">
-                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80" alt="Hotel">
+                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80"
+                            alt="Hotel">
                     </a>
                     <button class="btn-heart fav-active" th:attr="data-codigo-oferta=${oferta.codigoOferta}">
                         <i class="fa-solid fa-heart"></i>
@@ -54,20 +63,12 @@
                             <span th:text="${oferta.cidade}">Cidade</span>,
                             <span th:text="${oferta.estado}">UF</span>
                         </p>
-                        <p class="amenities">
-                            <i class="fa-solid fa-bed"></i>
-                            <span th:text="${oferta.tipoQuarto}">Quarto</span>
-                            &nbsp;&bull;&nbsp;
-                            <i class="fa-solid fa-calendar"></i>
-                            <span th:text="${#temporals.format(oferta.dataCheckIn, 'dd/MM')}">Check-in</span>
-                            -
-                            <span th:text="${#temporals.format(oferta.dataCheckOut, 'dd/MM')}">Check-out</span>
-                        </p>
                         <div class="card-footer">
                             <span class="reviews">Oferta salva</span>
                             <div class="price-box">
                                 <small>preço da oferta</small>
-                                <span class="price">R$ <span th:text="${#numbers.formatDecimal(oferta.preco, 1, 2)}">0</span></span>
+                                <span class="price">R$ <span
+                                        th:text="${#numbers.formatDecimal(oferta.preco, 1, 2)}">0</span></span>
                             </div>
                         </div>
                     </div>
@@ -76,14 +77,16 @@
         </div>
 
         <div class="empty-fav-message" id="emptyState"
-             th:classappend="${ofertasSalvas == null or ofertasSalvas.isEmpty()} ? '' : 'hidden'">
+            th:classappend="${ofertasSalvas == null or ofertasSalvas.isEmpty()} ? '' : 'hidden'">
             <i class="fa-regular fa-folder-open"></i>
             <h3>Você não possui nenhuma oferta salva</h3>
             <p>Volte para a tela inicial e explore as opções clicando no ícone de coração.</p>
-            <button class="btn-primary" onclick="window.location.href='/'" style="border:none; margin-top:15px; cursor:pointer;">Explorar Hotéis</button>
+            <button class="btn-primary" onclick="window.location.href='/'"
+                style="border:none; margin-top:15px; cursor:pointer;">Explorar Hotéis</button>
         </div>
     </main>
 
     <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
+
 </html>

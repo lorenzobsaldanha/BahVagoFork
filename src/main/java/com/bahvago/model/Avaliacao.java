@@ -38,6 +38,10 @@ public class Avaliacao {
     @Column(name = "CPF", nullable = false, length = 11)
     private String cpf;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CPF", referencedColumnName = "CPF", insertable = false, updatable = false)
+    private Usuario usuario;
+
     @PrePersist
     protected void onCreate() {
         if (this.data == null) {

@@ -1,6 +1,7 @@
+SET NAMES utf8mb4;
 DROP DATABASE IF EXISTS bahvagoBD;
 
-CREATE DATABASE bahvagoBD;
+CREATE DATABASE bahvagoBD
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_0900_ai_ci;
 USE bahvagoBD;
@@ -164,11 +165,11 @@ INSERT INTO CriterioBusca
 
 -- 0 = cliente | 1 = gerente
 INSERT INTO Usuario (CPF, Email, Senha, Nome, Tipo, DataCriacao, CodigoCriterioBusca)
-    VALUES ('12345678900', 'roberto@bahvago.com', 'abrobr1nh4', 'Roberto Iakuti', 0, '2026-06-19 00:00:00', 1),
-           ('98765432100', 'enzo@bahvago.com', 'aaaa', 'Enzo Saleiro', 1, '2026-06-19 00:00:00', 2),
-           ('00000000000', 'mario@bahvago.com', 'bbbb', 'Mario Eduardo', 1, '2026-06-19 00:00:00', 3),
-           ('00000000001', 'henrico@bahvago.com', 'cccc', 'Henrico Valazo', 1, '2026-06-19 00:00:00', NULL),
-           ('00000000002', 'patricio@bahvago.com', 'dddd', 'Patricio Vargas', 1, '2026-06-19 00:00:00', NULL);
+    VALUES ('12345678900', 'roberto@bahvago.com', '$2a$10$tsA89aAbW3xBEb0UUcGyROLw/tFlKaiepUvPPWBe1kJRuY35bjxCa', 'Roberto Iakuti', 0, '2026-06-19 00:00:00', 1),
+           ('98765432100', 'enzo@bahvago.com', '$2a$10$tsA89aAbW3xBEb0UUcGyROLw/tFlKaiepUvPPWBe1kJRuY35bjxCa', 'Enzo Saleiro', 1, '2026-06-19 00:00:00', 2),
+           ('00000000000', 'mario@bahvago.com', '$2a$10$tsA89aAbW3xBEb0UUcGyROLw/tFlKaiepUvPPWBe1kJRuY35bjxCa', 'Mario Eduardo', 1, '2026-06-19 00:00:00', 3),
+           ('00000000001', 'henrico@bahvago.com', '$2a$10$tsA89aAbW3xBEb0UUcGyROLw/tFlKaiepUvPPWBe1kJRuY35bjxCa', 'Henrico Valazo', 1, '2026-06-19 00:00:00', NULL),
+           ('00000000002', 'patricio@bahvago.com', '$2a$10$tsA89aAbW3xBEb0UUcGyROLw/tFlKaiepUvPPWBe1kJRuY35bjxCa', 'Patricio Vargas', 1, '2026-06-19 00:00:00', NULL);
 
 INSERT INTO HotelEstatisticas
     (Nome, Descricao, NumeroAcesso, AvaliacaoMedia, CPF, Latitude, Longitude, DataCriacao)

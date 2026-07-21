@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
 </head>
+
 <body>
 
     <header class="navbar">
@@ -25,39 +27,61 @@
     <section class="hero">
         <div class="container hero-container">
             <h1>Encontre o hotel perfeito <br><span class="text-gradient">para sua próxima viagem</span></h1>
-            <p class="hero-subtitle">Compare preços de milhares de hotéis em um só lugar e economize até 40% na sua reserva</p>
-            
+            <p class="hero-subtitle">Compare preços de milhares de hotéis em um só lugar e economize até 40% na sua
+                reserva</p>
+
             <form class="search-bar" id="mainSearchForm" th:action="@{/hoteis/search}" method="get">
                 <div class="search-input-group">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="30" width="30" fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M128 252.6C128 148.4 214 64 320 64C426 64 512 148.4 512 252.6C512 371.9 391.8 514.9 341.6 569.4C329.8 582.2 310.1 582.2 298.3 569.4C248.1 514.9 127.9 371.9 127.9 252.6zM320 320C355.3 320 384 291.3 384 256C384 220.7 355.3 192 320 192C284.7 192 256 220.7 256 256C256 291.3 284.7 320 320 320z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="30" width="30"
+                        fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+                        <path
+                            d="M128 252.6C128 148.4 214 64 320 64C426 64 512 148.4 512 252.6C512 371.9 391.8 514.9 341.6 569.4C329.8 582.2 310.1 582.2 298.3 569.4C248.1 514.9 127.9 371.9 127.9 252.6zM320 320C355.3 320 384 291.3 384 256C384 220.7 355.3 192 320 192C284.7 192 256 220.7 256 256C256 291.3 284.7 320 320 320z" />
+                    </svg>
                     <div>
                         <label>Destino</label>
                         <input type="text" name="termo" placeholder="Para onde você vai?" required>
                     </div>
                 </div>
                 <div class="search-input-group">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="25" width="25" fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M216 64C229.3 64 240 74.7 240 88L240 128L400 128L400 88C400 74.7 410.7 64 424 64C437.3 64 448 74.7 448 88L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 88C192 74.7 202.7 64 216 64zM216 176L160 176C151.2 176 144 183.2 144 192L144 240L496 240L496 192C496 183.2 488.8 176 480 176L216 176zM144 288L144 480C144 488.8 151.2 496 160 496L480 496C488.8 496 496 488.8 496 480L496 288L144 288z"/></svg>                    <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="25" width="25"
+                        fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+                        <path
+                            d="M216 64C229.3 64 240 74.7 240 88L240 128L400 128L400 88C400 74.7 410.7 64 424 64C437.3 64 448 74.7 448 88L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 88C192 74.7 202.7 64 216 64zM216 176L160 176C151.2 176 144 183.2 144 192L144 240L496 240L496 192C496 183.2 488.8 176 480 176L216 176zM144 288L144 480C144 488.8 151.2 496 160 496L480 496C488.8 496 496 488.8 496 480L496 288L144 288z" />
+                    </svg>
+                    <div>
                         <label>Check-in</label>
                         <input type="date" id="checkin">
                     </div>
                 </div>
 
                 <div class="search-input-group">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="25" width="25" fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M216 64C229.3 64 240 74.7 240 88L240 128L400 128L400 88C400 74.7 410.7 64 424 64C437.3 64 448 74.7 448 88L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 88C192 74.7 202.7 64 216 64zM216 176L160 176C151.2 176 144 183.2 144 192L144 240L496 240L496 192C496 183.2 488.8 176 480 176L216 176zM144 288L144 480C144 488.8 151.2 496 160 496L480 496C488.8 496 496 488.8 496 480L496 288L144 288z"/></svg>     
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" height="25" width="25"
+                        fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+                        <path
+                            d="M216 64C229.3 64 240 74.7 240 88L240 128L400 128L400 88C400 74.7 410.7 64 424 64C437.3 64 448 74.7 448 88L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 88C192 74.7 202.7 64 216 64zM216 176L160 176C151.2 176 144 183.2 144 192L144 240L496 240L496 192C496 183.2 488.8 176 480 176L216 176zM144 288L144 480C144 488.8 151.2 496 160 496L480 496C488.8 496 496 488.8 496 480L496 288L144 288z" />
+                    </svg>
                     <div>
                         <label>Check-out</label>
                         <input type="date" id="checkout">
                     </div>
                 </div>
                 <div class="search-input-group">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="50" height="40" fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M96 192C96 130.1 146.1 80 208 80C269.9 80 320 130.1 320 192C320 253.9 269.9 304 208 304C146.1 304 96 253.9 96 192zM32 528C32 430.8 110.8 352 208 352C305.2 352 384 430.8 384 528L384 534C384 557.2 365.2 576 342 576L74 576C50.8 576 32 557.2 32 534L32 528zM464 128C517 128 560 171 560 224C560 277 517 320 464 320C411 320 368 277 368 224C368 171 411 128 464 128zM464 368C543.5 368 608 432.5 608 512L608 534.4C608 557.4 589.4 576 566.4 576L421.6 576C428.2 563.5 432 549.2 432 534L432 528C432 476.5 414.6 429.1 385.5 391.3C408.1 376.6 435.1 368 464 368z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="50" height="40"
+                        fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+                        <path
+                            d="M96 192C96 130.1 146.1 80 208 80C269.9 80 320 130.1 320 192C320 253.9 269.9 304 208 304C146.1 304 96 253.9 96 192zM32 528C32 430.8 110.8 352 208 352C305.2 352 384 430.8 384 528L384 534C384 557.2 365.2 576 342 576L74 576C50.8 576 32 557.2 32 534L32 528zM464 128C517 128 560 171 560 224C560 277 517 320 464 320C411 320 368 277 368 224C368 171 411 128 464 128zM464 368C543.5 368 608 432.5 608 512L608 534.4C608 557.4 589.4 576 566.4 576L421.6 576C428.2 563.5 432 549.2 432 534L432 528C432 476.5 414.6 429.1 385.5 391.3C408.1 376.6 435.1 368 464 368z" />
+                    </svg>
                     <div>
                         <label>Hóspedes</label>
                         <input type="number" value="2" min="1">
                     </div>
                 </div>
                 <button type="submit" class="btn-search">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="20" height="20" fill="#FFFFFF"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.--><path d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="20" height="20"
+                        fill="#FFFFFF"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
+                        <path
+                            d="M480 272C480 317.9 465.1 360.3 440 394.7L566.6 521.4C579.1 533.9 579.1 554.2 566.6 566.7C554.1 579.2 533.8 579.2 521.3 566.7L394.7 440C360.3 465.1 317.9 480 272 480C157.1 480 64 386.9 64 272C64 157.1 157.1 64 272 64C386.9 64 480 157.1 480 272zM272 416C351.5 416 416 351.5 416 272C416 192.5 351.5 128 272 128C192.5 128 128 192.5 128 272C128 351.5 192.5 416 272 416z" />
+                    </svg>
                     Buscar hotéis
                 </button>
             </form>
@@ -86,77 +110,52 @@
             <p>Sempre aqui para ajudar</p>
         </div>
     </section>
-
-    <section class="categories container">
-        <h2>Explore por categoria</h2>
-        <div class="categories-grid">
-            <div class="category-item">
-                <i class="fa-solid fa-umbrella-beach"></i>
-                <span>Praia</span>
-                <small>234 hotéis</small>
-            </div>
-            <div class="category-item">
-                <i class="fa-solid fa-building"></i>
-                <span>Cidade</span>
-                <small>547 hotéis</small>
-            </div>
-            <div class="category-item">
-                <i class="fa-solid fa-mountain"></i>
-                <span>Montanha</span>
-                <small>123 hotéis</small>
-            </div>
-            <div class="category-item">
-                <i class="fa-solid fa-tree"></i>
-                <span>Resort</span>
-                <small>89 hotéis</small>
-            </div>
-            <div class="category-item">
-                <i class="fa-solid fa-cow"></i>
-                <span>Fazenda</span>
-                <small>45 hotéis</small>
-            </div>
-            <div class="category-item">
-                <i class="fa-solid fa-landmark"></i>
-                <span>Histórico</span>
-                <small>87 hotéis</small>
-            </div>
-        </div>
-    </section>
-
     <section class="popular-hotels container">
         <div class="section-header">
             <h2>Hotéis populares</h2>
-            <a th:href="@{/hoteis}" href="/hoteis" class="view-all">Ver todos <i class="fa-solid fa-arrow-right"></i></a>
+            <a th:href="@{/hoteis}" href="/hoteis" class="view-all">Ver todos <i
+                    class="fa-solid fa-arrow-right"></i></a>
         </div>
 
         <div class="hotels-grid">
-            <div class="hotel-card" th:each="hotel : ${hoteis}" th:if="${hoteis != null and !hoteis.isEmpty()}" th:object="${hotel}">
-                
+            <div class="hotel-card" th:each="hotel : ${hoteis}" th:if="${hoteis != null and !hoteis.isEmpty()}"
+                th:object="${hotel}">
+
                 <div class="card-image-wrapper">
-                    <a href="#" th:href="@{/hoteis/{id}(id=*{id})}"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80" alt="Hotel"></a>
-                    <button class="btn-heart"
-                            th:if="${ofertasPorHotel != null and ofertasPorHotel[hotel.id] != null}"
-                            th:attr="data-codigo-oferta=${ofertasPorHotel[hotel.id].id}">
+                    <a href="#" th:href="@{/hoteis/{id}(id=*{id})}"><img
+                            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80"
+                            alt="Hotel"></a>
+                    <button class="btn-heart" th:if="${ofertasPorHotel != null and ofertasPorHotel[hotel.id] != null}"
+                        th:attr="data-codigo-oferta=${ofertasPorHotel[hotel.id].id}">
                         <i class="fa-regular fa-heart"></i>
                     </button>
                 </div>
                 <a href="#" th:href="@{/hoteis/{id}(id=*{id})}">
-                <div class="card-content">
-                    <div class="card-title-row">
-                        <h3 th:text="*{nome}">Hotel</h3>
-                        <span class="rating"><i class="fa-solid fa-star" style="color:#3b82f6"></i> <span th:text="${hotel.avaliacaoMedia != null ? #numbers.formatDecimal(hotel.avaliacaoMedia, 1, 1) : '0.0'}">0.0</span></span>
-                    </div>
-                    <p class="location"><i class="fa-solid fa-location-dot"></i> <span th:text="${hotel.localizacao?.cidade != null ? hotel.localizacao.cidade : 'Cidade'}">Cidade</span>, <span th:text="${hotel.localizacao?.estado != null ? hotel.localizacao.estado : 'UF'}">UF</span></p>
-                    <p class="amenities"><i class="fa-solid fa-dog"></i></p>
-                    <div class="card-footer">
-                        <span class="reviews" th:text="${hotel.avaliacaoMedia != null ? 'Avaliação média' : 'Sem avaliações'}">Sem avaliações</span>
-                        <div class="price-box">
-                            <small>a partir de</small>
-                            <span class="price">R$ <span th:text="${ofertasPorHotel != null and ofertasPorHotel[hotel.id] != null ? #numbers.formatDecimal(ofertasPorHotel[hotel.id].preco, 1, 'POINT', 2, 'COMMA') : '-'}">-</span><small>/noite</small></span>
+                    <div class="card-content">
+                        <div class="card-title-row">
+                            <h3 th:text="*{nome}">Hotel</h3>
+                            <span class="rating"><i class="fa-solid fa-star" style="color:#3b82f6"></i> <span
+                                    th:text="${hotel.avaliacaoMedia != null ? #numbers.formatDecimal(hotel.avaliacaoMedia, 1, 1) : '0.0'}">0.0</span></span>
                         </div>
+                        <p class="location"><i class="fa-solid fa-location-dot"></i> <span
+                                th:text="${hotel.localizacao?.cidade != null ? hotel.localizacao.cidade : 'Cidade'}">Cidade</span>,
+                            <span
+                                th:text="${hotel.localizacao?.estado != null ? hotel.localizacao.estado : 'UF'}">UF</span>
+                        </p>
+                        <p class="amenities"><i class="fa-solid fa-dog"></i></p>
+                        <div class="card-footer">
+                            <span class="reviews"
+                                th:text="${hotel.avaliacaoMedia != null ? 'Avaliação média' : 'Sem avaliações'}">Sem
+                                avaliações</span>
+                            <div class="price-box">
+                                <small>a partir de</small>
+                                <span class="price">R$ <span
+                                        th:text="${ofertasPorHotel != null and ofertasPorHotel[hotel.id] != null ? #numbers.formatDecimal(ofertasPorHotel[hotel.id].preco, 1, 'POINT', 2, 'COMMA') : '-'}">-</span><small>/noite</small></span>
+                            </div>
+                        </div>
+
                     </div>
-                
-                </div></a>
+                </a>
             </div>
 
             <div class="hotel-card" th:if="${hoteis == null or hoteis.isEmpty()}">
@@ -176,10 +175,13 @@
                     <div class="avatar" style="background-color: #2563eb;">MS</div>
                     <div>
                         <h4>Maria Silva</h4>
-                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i></div>
                     </div>
                 </div>
-                <p class="comment">Experiência incrível! O hotel superou todas as expectativas. Quartos espaçosos, equipe atenciosa e localização perfeita.</p>
+                <p class="comment">Experiência incrível! O hotel superou todas as expectativas. Quartos espaçosos,
+                    equipe atenciosa e localização perfeita.</p>
                 <span class="helpful">24 pessoas acharam útil</span>
             </div>
 
@@ -188,10 +190,13 @@
                     <div class="avatar" style="background-color: #3b82f6;">JS</div>
                     <div>
                         <h4>João Santos</h4>
-                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star-half-stroke"></i></div>
                     </div>
                 </div>
-                <p class="comment">Muito bom! Apenas o café da manhã poderia ter mais opções, mas no geral recomendo.</p>
+                <p class="comment">Muito bom! Apenas o café da manhã poderia ter mais opções, mas no geral recomendo.
+                </p>
                 <span class="helpful">12 pessoas acharam útil</span>
             </div>
 
@@ -200,7 +205,9 @@
                     <div class="avatar" style="background-color: #1d4ed8;">AC</div>
                     <div>
                         <h4>Ana Costa</h4>
-                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <div class="stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                                class="fa-solid fa-star"></i></div>
                     </div>
                 </div>
                 <p class="comment">Simplesmente perfeito! Voltarei com certeza.</p>
@@ -239,4 +246,5 @@
 
     <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 </body>
+
 </html>
