@@ -140,7 +140,7 @@
 
                 <!-- Card dinâmico gerado para cada hotel -->
                 <div class="hotel-card" th:each="hotel : ${hoteis}" th:if="${hoteis != null and !hoteis.isEmpty()}"
-                     th:attr="data-price=${ofertasPorHotel != null and ofertasPorHotel[hotel.id] != null ? ofertasPorHotel[hotel.id].preco : 999999}, data-rating=${hotel.avaliacaoMedia != null ? hotel.avaliacaoMedia : 0}">
+                    th:attr="data-price=${ofertasPorHotel != null and ofertasPorHotel[hotel.id] != null ? ofertasPorHotel[hotel.id].preco : 999999}, data-rating=${hotel.avaliacaoMedia != null ? hotel.avaliacaoMedia : 0}">
                     <a th:href="@{/hoteis/{id}(id=${hotel.id})}" href="#">
                         <div class="card-image-wrapper">
                             <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80"
@@ -169,14 +169,14 @@
                                     th:text="${hotel.localizacao?.estado != null ? hotel.localizacao.estado : 'UF'}">UF</span>
                             </p>
                             <p class="amenities">
-                                <i class="fa-solid fa-wifi"></i>
-                                <i class="fa-solid fa-mug-hot"></i>
+                                <i class="fa-solid fa-paw"></i>
                             </p>
                             <div class="card-footer">
-                                <span class="reviews"
-                                    th:text="${hotel.avaliacaoMedia != null ? 'Avaliação média' : 'Sem avaliações'}">
-                                    Sem avaliações
-                                </span>
+                                <span class="reviews" th:id="'totalAvaliacoes-' + ${hotel.id}"
+                                    th:with="total=${totalAvaliacoesPorHotel != null and totalAvaliacoesPorHotel[hotel.id] != null ? totalAvaliacoesPorHotel[hotel.id] : 0}"
+                                    th:text="${total == 0 ? 'Sem avaliações' : (total == 1 ? '1 avaliação' : total + ' avaliações')}">Sem
+                                    avaliações</span>
+
                                 <div class="price-box">
                                     <small>a partir de</small>
                                     <span class="price">R$ <span th:text="${ofertasPorHotel != null and ofertasPorHotel[hotel.id] != null

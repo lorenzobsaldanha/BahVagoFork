@@ -2,6 +2,7 @@ package com.bahvago.controller;
 
 import com.bahvago.model.Hotel;
 import com.bahvago.model.Oferta;
+import com.bahvago.service.AvaliacaoService;
 import com.bahvago.service.HotelService;
 import com.bahvago.service.OfertaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,16 @@ public class HomeController {
     @Autowired
     private OfertaService ofertaService;
 
+    @Autowired
+    private AvaliacaoService avaliacaoService;
+
     @GetMapping("/")
     public String index(Model model) {
         List<Hotel> hoteis = hotelService.listarTodos();
+        List<Integer> ids = hoteis.stream().map(Hotel::getId).collect(Collectors.toList());
         model.addAttribute("hoteis", hoteis);
         model.addAttribute("ofertasPorHotel", mapOfertasPorHotel(hoteis));
+        model.addAttribute("totalAvaliacoesPorHotel", avaliacaoService.contarAvaliacoesPorHoteis(ids));
         return "index";
     }
 

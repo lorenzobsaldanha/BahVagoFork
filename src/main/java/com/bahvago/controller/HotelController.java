@@ -41,9 +41,17 @@ public class HotelController {
     @GetMapping
     public String listarHoteis(Model model) {
         List<Hotel> hoteis = hotelService.listarTodos();
+        hoteis.sort((h1, h2) -> {
+            Double r1 = h1.getAvaliacaoMedia() != null ? h1.getAvaliacaoMedia() : 0.0;
+            Double r2 = h2.getAvaliacaoMedia() != null ? h2.getAvaliacaoMedia() : 0.0;
+            return r2.compareTo(r1);
+        });
+        List<Integer> ids = hoteis.stream().map(Hotel::getId).collect(Collectors.toList());
         model.addAttribute("hoteis", hoteis);
         model.addAttribute("ofertasPorHotel", mapOfertasPorHotel(hoteis));
-        return "hotel";
+        model.addAttribute("totalAvaliacoesPorHotel", avaliacaoService.contarAvaliacoesPorHoteis(ids));
+        model.addAttribute("termo", "Todos os Hotéis");
+        return "resultados";
     }
 
     @GetMapping("/search")

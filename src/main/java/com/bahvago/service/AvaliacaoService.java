@@ -5,7 +5,9 @@ import com.bahvago.repository.AvaliacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AvaliacaoService {
@@ -50,5 +52,13 @@ public class AvaliacaoService {
             .mapToDouble(Avaliacao::getNota)
             .average()
             .orElse(0.0);
+    }
+
+    public Map<Integer, Long> contarAvaliacoesPorHoteis(List<Integer> hotelIds) {
+        return hotelIds.stream()
+            .collect(Collectors.toMap(
+                id -> id,
+                id -> avaliacaoRepository.countByCodigoHotel(id)
+            ));
     }
 }
