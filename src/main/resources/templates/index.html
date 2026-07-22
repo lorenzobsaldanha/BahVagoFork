@@ -143,7 +143,10 @@
                             <span
                                 th:text="${hotel.localizacao?.estado != null ? hotel.localizacao.estado : 'UF'}">UF</span>
                         </p>
-                        <p class="amenities"><i class="fa-solid fa-dog"></i></p>
+                        <p class="amenities">
+                            <i th:if="${hotel.aceitaPet}" class="fa-solid fa-dog" title="Aceita Pets" style="color: #3b82f6;"></i>
+                            <i th:unless="${hotel.aceitaPet}" class="fa-solid fa-ban" title="Não aceita Pets" style="color: #94a3b8;"></i>
+                        </p>
                         <div class="card-footer">
                             <span class="reviews" th:id="'totalAvaliacoes-' + ${hotel.id}"
                                 th:with="total=${totalAvaliacoesPorHotel != null and totalAvaliacoesPorHotel[hotel.id] != null ? totalAvaliacoesPorHotel[hotel.id] : 0}"

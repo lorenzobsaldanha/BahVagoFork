@@ -68,4 +68,7 @@ public class Hotel {
     protected void onCreate() {
         this.dataCriacao = LocalDateTime.now();
     }
+
+    @Transient
+    private Boolean aceitaPet;
 }

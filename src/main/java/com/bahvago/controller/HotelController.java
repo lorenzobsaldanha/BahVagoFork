@@ -46,6 +46,7 @@ public class HotelController {
     @GetMapping
     public String listarHoteis(Model model) {
         List<Hotel> hoteis = hotelService.listarTodos();
+        hotelService.preencherInformacaoPet(hoteis);
         hoteis.sort((h1, h2) -> {
             Double r1 = h1.getAvaliacaoMedia() != null ? h1.getAvaliacaoMedia() : 0.0;
             Double r2 = h2.getAvaliacaoMedia() != null ? h2.getAvaliacaoMedia() : 0.0;
@@ -60,11 +61,22 @@ public class HotelController {
     }
 
     @GetMapping("/search")
-    public String buscarHoteis(@RequestParam String termo, Model model) {
-        List<Hotel> hoteis = hotelService.buscarPorNomeOuCidade(termo);
+    public String buscarHoteis(@RequestParam(value = "termo", required = false) String termo, Model model) {
+        List<Hotel> hoteis;
+
+        if (termo == null || termo.trim().isEmpty()) {
+            hoteis = hotelService.listarTodos();
+            model.addAttribute("termo", "");
+        } else {
+            hoteis = hotelService.buscarPorNomeOuCidade(termo);
+            model.addAttribute("termo", termo);
+        }
+
+        hotelService.preencherInformacaoPet(hoteis); 
+
         model.addAttribute("hoteis", hoteis);
-        model.addAttribute("termo", termo);
         model.addAttribute("ofertasPorHotel", mapOfertasPorHotel(hoteis));
+        
         return "resultados";
     }
 

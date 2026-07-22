@@ -29,6 +29,7 @@ public class HomeController {
     @GetMapping("/")
     public String index(Model model) {
         List<Hotel> hoteis = hotelService.listarTodos();
+        hotelService.preencherInformacaoPet(hoteis); 
         List<Integer> ids = hoteis.stream().map(Hotel::getId).collect(Collectors.toList());
         model.addAttribute("hoteis", hoteis);
         model.addAttribute("ofertasPorHotel", mapOfertasPorHotel(hoteis));

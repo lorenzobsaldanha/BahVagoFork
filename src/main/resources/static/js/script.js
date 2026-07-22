@@ -554,99 +554,100 @@ document.addEventListener("DOMContentLoaded", () => {
     const clearFiltersBtn = document.getElementById("clearFilters");
 
     if (hotelsGrid && (filtersForm || sortSelect)) {
-        const allCards = Array.from(hotelsGrid.querySelectorAll(".hotel-card"));
+    const allCards = Array.from(hotelsGrid.querySelectorAll(".hotel-card"));
 
-        const applyFiltersAndSort = () => {
-            const maxPrice = priceRange ? parseFloat(priceRange.value) : Infinity;
+    const applyFiltersAndSort = () => {
+        console.log("Aplicando filtros..."); 
 
-            const ratingCheckboxes = document.querySelectorAll('input[data-filter="rating"]:checked');
-            const selectedRatings = Array.from(ratingCheckboxes).map(cb => parseFloat(cb.value));
+        const maxPrice = priceRange ? parseFloat(priceRange.value) : Infinity;
+        
+        const petFriendlyCheckbox = document.querySelector('input[data-filter="pet"]');
+        const petFriendlyChecked = petFriendlyCheckbox ? petFriendlyCheckbox.checked : false;
 
-            let visibleCards = allCards.filter(card => {
-                const price = parseFloat(card.getAttribute("data-price"));
-                const rating = parseFloat(card.getAttribute("data-rating"));
+        const ratingCheckboxes = document.querySelectorAll('input[data-filter="rating"]:checked');
+        const selectedRatings = Array.from(ratingCheckboxes).map(cb => parseFloat(cb.value));
 
-                if (price > maxPrice) return false;
+        let visibleCards = allCards.filter(card => {
+            const price = parseFloat(card.getAttribute("data-price"));
+            const rating = parseFloat(card.getAttribute("data-rating"));
+            const aceitaPet = card.getAttribute("data-pet") === 'true';
 
-                if (selectedRatings.length > 0) {
-                    const minSelectedRating = Math.min(...selectedRatings);
-                    if (rating < minSelectedRating) return false;
-                }
+            if (price > maxPrice) return false;
 
-                return true;
-            });
+            if (petFriendlyChecked && !aceitaPet) return false;
 
-            if (sortSelect) {
-                const sortValue = sortSelect.value;
-                visibleCards.sort((a, b) => {
-                    const priceA = parseFloat(a.getAttribute("data-price"));
-                    const priceB = parseFloat(b.getAttribute("data-price"));
-                    const ratingA = parseFloat(a.getAttribute("data-rating"));
-                    const ratingB = parseFloat(b.getAttribute("data-rating"));
-
-                    if (sortValue === "preco_asc") return priceA - priceB;
-                    if (sortValue === "preco_desc") return priceB - priceA;
-                    if (sortValue === "avaliacao") return ratingB - ratingA;
-                    return 0;
-                });
+            if (selectedRatings.length > 0) {
+                const minSelectedRating = Math.min(...selectedRatings);
+                if (rating < minSelectedRating) return false;
             }
 
-            allCards.forEach(card => card.style.display = "none");
-            visibleCards.forEach(card => {
-                card.style.display = "";
-                hotelsGrid.appendChild(card);
-            });
-
-            const resultsCount = document.querySelector(".results-count");
-            if (resultsCount) {
-                resultsCount.textContent = `${visibleCards.length} ${visibleCards.length === 1 ? 'opção encontrada' : 'opções encontradas'}`;
-            }
-
-            const emptyState = document.querySelector(".empty-search-state");
-            if (emptyState) {
-                if (visibleCards.length === 0) {
-                    emptyState.style.display = "flex";
-                } else {
-                    emptyState.style.display = "none";
-                }
-            } else if (visibleCards.length === 0) {
-                const emptyHTML = document.createElement("div");
-                emptyHTML.className = "empty-search-state";
-                emptyHTML.innerHTML = `
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <h3>Nenhum hotel encontrado</h3>
-                    <p>Nenhum hotel corresponde aos filtros selecionados.</p>
-                    <button class="btn-primary" onclick="document.getElementById('clearFilters').click()">Limpar Filtros</button>
-                `;
-                hotelsGrid.appendChild(emptyHTML);
-            }
-        };
-
-        if (filtersForm) {
-            filtersForm.addEventListener("submit", (e) => {
-                e.preventDefault();
-                applyFiltersAndSort();
-            });
-
-            if (priceRange && priceRangeMax) {
-                priceRange.addEventListener("input", (e) => {
-                    priceRangeMax.textContent = `R$ ${e.target.value}`;
-                });
-            }
-
-            if (clearFiltersBtn) {
-                clearFiltersBtn.addEventListener("click", () => {
-                    filtersForm.reset();
-                    if (priceRangeMax) priceRangeMax.textContent = `R$ ${priceRange ? priceRange.max : 5000}+`;
-                    applyFiltersAndSort();
-                });
-            }
-        }
+            return true;
+        });
 
         if (sortSelect) {
-            sortSelect.addEventListener("change", applyFiltersAndSort);
+            const sortValue = sortSelect.value;
+            visibleCards.sort((a, b) => {
+                const priceA = parseFloat(a.getAttribute("data-price"));
+                const priceB = parseFloat(b.getAttribute("data-price"));
+                const ratingA = parseFloat(a.getAttribute("data-rating"));
+                const ratingB = parseFloat(b.getAttribute("data-rating"));
+
+                if (sortValue === "preco_asc") return priceA - priceB;
+                if (sortValue === "preco_desc") return priceB - priceA;
+                if (sortValue === "avaliacao") return ratingB - ratingA;
+                return 0;
+            });
+        }
+
+        allCards.forEach(card => card.style.display = "none");
+        
+        visibleCards.forEach(card => {
+            card.style.display = "block"; 
+            hotelsGrid.appendChild(card);
+        });
+
+        const resultsCount = document.querySelector(".results-count");
+        if (resultsCount) {
+            resultsCount.textContent = `${visibleCards.length} ${visibleCards.length === 1 ? 'opção encontrada' : 'opções encontradas'}`;
+        }
+
+        const emptyState = document.querySelector(".empty-search-state");
+        if (emptyState) {
+            emptyState.style.display = visibleCards.length === 0 ? "flex" : "none";
+        }
+    };
+
+    if (filtersForm) {
+        filtersForm.addEventListener("submit", (e) => {
+            console.log("Submit do formulário interceptado");
+            e.preventDefault(); 
+            applyFiltersAndSort();
+            return false; 
+        });
+
+        if (priceRange) {
+            priceRange.addEventListener("change", applyFiltersAndSort);
         }
     }
+
+    if (clearFiltersBtn) {
+        clearFiltersBtn.addEventListener("click", () => {
+            console.log("Limpando filtros...");
+            filtersForm.reset();
+            if (priceRange) {
+                priceRange.value = priceRange.max; 
+            }
+            if (priceRangeMax) {
+                priceRangeMax.textContent = `R$ ${priceRange ? priceRange.max : '5000'}+`;
+            }
+            applyFiltersAndSort();
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener("change", applyFiltersAndSort);
+    }
+}
 
     console.log("HotelHub - Sistema inicializado com sucesso! 🚀");
 });

@@ -2,6 +2,8 @@ package com.bahvago.service;
 
 import com.bahvago.model.Hotel;
 import com.bahvago.repository.HotelRepository;
+import com.bahvago.repository.QuartoRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -47,5 +49,15 @@ public class HotelService {
 
     public void deletarHotel(Integer id) {
         hotelRepository.deleteById(id);
+    }
+
+    @Autowired
+    private QuartoRepository quartoRepository;
+
+    public void preencherInformacaoPet(List<Hotel> hoteis) {
+        hoteis.forEach(hotel -> {
+            boolean temQuartoPet = quartoRepository.existsByCodigoHotelAndAceitaPetTrue(hotel.getId());
+            hotel.setAceitaPet(temQuartoPet);
+        });
     }
 }
