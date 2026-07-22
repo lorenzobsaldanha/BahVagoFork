@@ -98,7 +98,7 @@ CREATE TABLE ImagemQuarto (
 
 CREATE TABLE Oferta (
     CodigoOferta int AUTO_INCREMENT,
-    UrlOrigem varchar(1000) NOT NULL,
+    UrlOrigem TEXT NOT NULL,
     DataCheckIn date NOT NULL,
     DataCheckOut date NOT NULL,
     Preco double NOT NULL,
