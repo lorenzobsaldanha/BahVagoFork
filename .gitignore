@@ -9,6 +9,7 @@
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
+.claude/*
 
 # Package Files #
 *.jar
@@ -53,3 +54,4 @@ logs/
 # Temporary
 tmp/
 temp/
+.claude/settings.local.json

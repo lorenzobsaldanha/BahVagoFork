@@ -85,7 +85,7 @@
                                 <span class="room-row-price">R$ <span
                                         th:text="${#numbers.formatDecimal(quarto.preco, 1, 'POINT', 2, 'COMMA')}">0,00</span><small>/noite</small></span>
                                 <button class="btn-goToRoom"
-                                    th:attr="data-room=*{numero}, data-hotel=*{codigoHotel}">Ver ofertas</button>
+                                    th:attr="data-room=*{numero}, data-hotel=*{codigoHotel}, data-checkin=${checkin}, data-checkout=${checkout}, data-pessoas=${pessoas}, data-quartos=${quartosBusca}">Ver ofertas</button>
                             </div>
                         </div>
 
@@ -148,6 +148,11 @@
 
         </div>
     </main>
+
+    <div id="pageLoadingOverlay" class="page-loading-overlay" style="display:none;">
+        <div class="spinner-lg"></div>
+        <p>Carregando ofertas do quarto...</p>
+    </div>
 
     <script th:src="@{/js/script.js}" src="/js/script.js"></script>
 

@@ -81,6 +81,7 @@ public class FavoritoService {
                 .codigoOferta(oferta.getId())
                 .codigoHotel(oferta.getCodigoHotel())
                 .nomeHotel(hotel != null ? hotel.getNome() : "Hotel")
+                .imagemUrl(hotel != null ? hotel.getImagemUrl() : null)
                 .cidade(hotel != null && hotel.getLocalizacao() != null ? hotel.getLocalizacao().getCidade() : "")
                 .estado(hotel != null && hotel.getLocalizacao() != null ? hotel.getLocalizacao().getEstado() : "")
                 .avaliacaoMedia(hotel != null ? hotel.getAvaliacaoMedia() : null)

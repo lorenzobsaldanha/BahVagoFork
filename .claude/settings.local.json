@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mvn -o -q compile)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(command -v node)",
+      "Bash(node --check /home/hasilion/Documentos/GitHub/BahVago/src/main/resources/static/js/script.js)",
+      "Bash(xargs -I{} echo {})"
+    ]
+  }
+}

@@ -90,9 +90,19 @@ document.addEventListener("DOMContentLoaded", () => {
         botao.addEventListener("click", (e) => {
             const numeroQuarto = botao.getAttribute("data-room");
             const codigoHotel = botao.getAttribute("data-hotel");
-            
+
             if (numeroQuarto && codigoHotel) {
-                window.location.href = `/quartos/hotel/${codigoHotel}/numero/${numeroQuarto}`;
+                const params = new URLSearchParams();
+                ["checkin", "checkout", "pessoas", "quartos"].forEach((chave) => {
+                    const valor = botao.getAttribute(`data-${chave}`);
+                    if (valor) params.set(chave, valor);
+                });
+                const query = params.toString();
+
+                const overlayCarregamento = document.getElementById("pageLoadingOverlay");
+                if (overlayCarregamento) overlayCarregamento.style.display = "flex";
+
+                window.location.href = `/quartos/hotel/${codigoHotel}/numero/${numeroQuarto}` + (query ? `?${query}` : "");
             } else {
                 if (typeof gerenciarAcesso === "function") {
                     gerenciarAcesso(e, `quarto.html?type=${numeroQuarto || 'deluxe'}`);
@@ -122,13 +132,137 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    const botoesRedirecionamento = document.querySelectorAll(".btn-redirect-offer, #btnMainRedirect");
-    botoesRedirecionamento.forEach(botao => {
-        botao.addEventListener("click", () => {
-            const urlDestino = botao.getAttribute("data-url") || "https://www.booking.com";
-            window.open(urlDestino, '_blank');
-        });
+    // Delegação de clique: cobre também os cards de oferta recriados dinamicamente
+    // ao trocar as datas (ver bloco "ATUALIZAÇÃO DINÂMICA DE OFERTAS" abaixo).
+    document.addEventListener("click", (e) => {
+        const botao = e.target.closest(".btn-redirect-offer, #btnMainRedirect");
+        if (!botao) return;
+        const urlDestino = botao.getAttribute("data-url") || "https://www.booking.com";
+        window.open(urlDestino, '_blank');
     });
+
+    // ==========================================
+    // 4.1 ATUALIZAÇÃO DINÂMICA DE OFERTAS (quarto.html)
+    // ==========================================
+    const roomComparisonBox = document.querySelector(".room-comparison-box");
+    if (roomComparisonBox) {
+        const codigoHotelOfertas = roomComparisonBox.getAttribute("data-codigo-hotel");
+        const numeroQuartoOfertas = roomComparisonBox.getAttribute("data-numero");
+        const inputCheckinOfertas = document.getElementById("checkin");
+        const inputCheckoutOfertas = document.getElementById("checkout");
+        const offersLoadingEl = document.getElementById("offersLoading");
+        const offersStackEl = document.getElementById("offersStack");
+        const offersEmptyEl = document.getElementById("offersEmptyState");
+        const melhorPrecoNoiteEl = document.getElementById("melhorPrecoNoite");
+        const melhorPrecoParceiroEl = document.getElementById("melhorPrecoParceiro");
+        const bookingSummaryCalcEl = document.getElementById("bookingSummaryCalc");
+        const calcLinhaNoitesEl = document.getElementById("calcLinhaNoites");
+        const calcLinhaTotalEl = document.getElementById("calcLinhaTotal");
+        const calcTotalGeralEl = document.getElementById("calcTotalGeral");
+        const btnMainRedirectOfertas = document.getElementById("btnMainRedirect");
+
+        const escaparHtml = (str) => {
+            if (!str) return "";
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        };
+
+        const montarCardOferta = (oferta, ehMelhor) => {
+            const atributos = Array.isArray(oferta.atributos) ? oferta.atributos : [];
+            const temAtributos = atributos.length > 0 && !atributos.includes("_");
+            const nomeQuartoHtml = oferta.quarto
+                ? `<p class="perks-text">${escaparHtml(oferta.quarto)}</p>`
+                : "";
+            const badgeHtml = ehMelhor ? `<span class="badge-best-choice">Melhor preço</span>` : "";
+            const textoBotao = oferta.botao ? escaparHtml(oferta.parceiro) : "Ver oferta";
+
+            return `
+                <div class="offer-card-row">
+                    <div class="platform-meta">
+                        <span class="platform-logo-mock booking-color">${escaparHtml(oferta.parceiro)}</span>
+                        <div>
+                            <h4><span>${escaparHtml(oferta.parceiro)}</span>${badgeHtml}</h4>
+                            ${temAtributos ? '<p class="perks-text"></p>' : ""}
+                            ${nomeQuartoHtml}
+                        </div>
+                    </div>
+                    <div class="platform-pricing-action">
+                        <div class="price-stack">
+                            <span class="current-price">${escaparHtml(oferta.precoNoite)}/noite</span>
+                            <small class="tax-info">Total: ${escaparHtml(oferta.precoTotal)}</small>
+                        </div>
+                        <button class="btn-redirect-offer" data-url="${escaparHtml(oferta.url)}">${textoBotao}</button>
+                    </div>
+                </div>
+            `;
+        };
+
+        const atualizarInterfaceOfertas = (dados) => {
+            const ofertas = Array.isArray(dados.ofertas) ? dados.ofertas : [];
+
+            if (offersStackEl) {
+                if (ofertas.length === 0) {
+                    offersStackEl.style.display = "none";
+                    offersStackEl.innerHTML = "";
+                } else {
+                    offersStackEl.innerHTML = ofertas.map((oferta, indice) => montarCardOferta(oferta, indice === 0)).join("");
+                    offersStackEl.style.display = "";
+                }
+            }
+            if (offersEmptyEl) offersEmptyEl.style.display = ofertas.length === 0 ? "" : "none";
+
+            const melhorOferta = ofertas[0];
+            if (melhorOferta) {
+                if (melhorPrecoNoiteEl) melhorPrecoNoiteEl.textContent = `${melhorOferta.precoNoite}/noite`;
+                if (melhorPrecoParceiroEl) melhorPrecoParceiroEl.textContent = `via ${melhorOferta.parceiro}`;
+                if (bookingSummaryCalcEl) bookingSummaryCalcEl.style.display = "";
+                if (calcLinhaNoitesEl) calcLinhaNoitesEl.textContent = `${melhorOferta.precoNoite} x ${dados.noites} noites`;
+                if (calcLinhaTotalEl) calcLinhaTotalEl.textContent = melhorOferta.precoTotal;
+                if (calcTotalGeralEl) calcTotalGeralEl.textContent = melhorOferta.precoTotal;
+                if (btnMainRedirectOfertas) btnMainRedirectOfertas.setAttribute("data-url", melhorOferta.url);
+            } else {
+                if (melhorPrecoNoiteEl) melhorPrecoNoiteEl.textContent = "R$ 0/noite";
+                if (melhorPrecoParceiroEl) melhorPrecoParceiroEl.textContent = "Sem ofertas disponíveis";
+                if (bookingSummaryCalcEl) bookingSummaryCalcEl.style.display = "none";
+                if (btnMainRedirectOfertas) btnMainRedirectOfertas.removeAttribute("data-url");
+            }
+        };
+
+        const buscarNovasOfertas = async () => {
+            if (!codigoHotelOfertas || !numeroQuartoOfertas) return;
+            if (!inputCheckinOfertas || !inputCheckoutOfertas || !inputCheckinOfertas.value || !inputCheckoutOfertas.value) return;
+
+            if (offersLoadingEl) offersLoadingEl.style.display = "flex";
+            if (offersStackEl) offersStackEl.style.display = "none";
+            if (offersEmptyEl) offersEmptyEl.style.display = "none";
+            inputCheckinOfertas.disabled = true;
+            inputCheckoutOfertas.disabled = true;
+
+            try {
+                const params = new URLSearchParams({
+                    checkin: inputCheckinOfertas.value,
+                    checkout: inputCheckoutOfertas.value
+                });
+                const resposta = await fetch(
+                    `/quartos/hotel/${codigoHotelOfertas}/numero/${numeroQuartoOfertas}/ofertas?${params.toString()}`,
+                    { headers: { "Accept": "application/json" } }
+                );
+                if (!resposta.ok) throw new Error("Falha ao buscar ofertas: " + resposta.status);
+                const dados = await resposta.json();
+                atualizarInterfaceOfertas(dados);
+            } catch (erro) {
+                console.error("Erro ao atualizar ofertas do quarto", erro);
+                if (offersStackEl) offersStackEl.style.display = "none";
+                if (offersEmptyEl) offersEmptyEl.style.display = "";
+            } finally {
+                if (offersLoadingEl) offersLoadingEl.style.display = "none";
+                inputCheckinOfertas.disabled = false;
+                inputCheckoutOfertas.disabled = false;
+            }
+        };
+
+        if (inputCheckinOfertas) inputCheckinOfertas.addEventListener("change", buscarNovasOfertas);
+        if (inputCheckoutOfertas) inputCheckoutOfertas.addEventListener("change", buscarNovasOfertas);
+    }
 
     const thumbs = document.querySelectorAll(".room-thumbnails-strip .thumb");
     const mainImg = document.getElementById("roomDisplayImg");

@@ -42,8 +42,9 @@
                 th:attr="data-codigo-oferta=${oferta.codigoOferta}">
                 <div class="card-image-wrapper">
                     <a th:href="@{/hoteis/{id}(id=${oferta.codigoHotel})}">
-                        <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80"
-                            alt="Hotel">
+                        <img th:src="${oferta.imagemUrl != null and !#strings.isEmpty(oferta.imagemUrl) ? oferta.imagemUrl : 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80'}"
+                            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=500&q=80"
+                            th:alt="${oferta.nomeHotel}" alt="Hotel">
                     </a>
                     <button class="btn-heart fav-active" th:attr="data-codigo-oferta=${oferta.codigoOferta}">
                         <i class="fa-solid fa-heart"></i>

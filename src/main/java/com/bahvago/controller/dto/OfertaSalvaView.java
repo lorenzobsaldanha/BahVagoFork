@@ -16,6 +16,7 @@ public class OfertaSalvaView {
     private Integer codigoOferta;
     private Integer codigoHotel;
     private String nomeHotel;
+    private String imagemUrl;
     private String cidade;
     private String estado;
     private Double avaliacaoMedia;

@@ -31,18 +31,25 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request,
-                                                HttpServletResponse response,
-                                                Authentication authentication)
-                    throws IOException, ServletException {
+        return (request, response, authentication) -> {
 
-                boolean isHoteleiro = authentication.getAuthorities()
-                        .contains(new SimpleGrantedAuthority("ROLE_HOTELEIRO"));
+            boolean isHoteleiro = authentication.getAuthorities()
+                    .contains(new SimpleGrantedAuthority("ROLE_HOTELEIRO"));
 
-                response.sendRedirect(isHoteleiro ? "/dashboard" : "/");
+            String referer = request.getHeader("Referer");
+
+            if (referer != null && referer.contains("/login-hoteleiro")) {
+
+                if (isHoteleiro) {
+                    response.sendRedirect("/dashboard");
+                } else {
+                    response.sendRedirect("/login-hoteleiro?error");
+                }
+
+                return;
             }
+
+            response.sendRedirect("/");
         };
     }
 

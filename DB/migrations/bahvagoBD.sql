@@ -98,7 +98,7 @@ CREATE TABLE ImagemQuarto (
 
 CREATE TABLE Oferta (
     CodigoOferta int AUTO_INCREMENT,
-    UrlOrigem varchar(1000) NOT NULL,
+    UrlOrigem TEXT NOT NULL,
     DataCheckIn date NOT NULL,
     DataCheckOut date NOT NULL,
     Preco double NOT NULL,
@@ -188,7 +188,8 @@ INSERT INTO HotelEstatisticas
     (Nome, Descricao, NumeroAcesso, AvaliacaoMedia, CPF, Latitude, Longitude, DataCriacao)
     VALUES('Mercure Sao Paulo Pinheiros','Paulista Avenue shops and restaurants are 4 km from this hotel. The hotel is located 10 km from São Paulo - Congonhas Airport and 33 km from São Paulo.',0,4.80,'98765432100',-23550520,-46633308,'2026-06-19 00:00:00'),
           ('Panamby Sao Paulo','The Hotel Panamby Sao Paulo is conveniently located just 600 meters from the Barra Funda subway and bus station. A complimentary breakfast and Wi-Fi are included, and valet service is available for a fee.',0,4.30,'00000000000',-23561414,-46655772,'2026-06-19 00:00:00'),
-          ('Qoya São Paulo Paulista, Curio Collection by Hilton','O Qoya Hotel traz os conceitos de tranquilidade e bem-estar em conjunto com o melhor do design e da arquitetura para o equilíbrio completo da sua estada em meio ao principal ícone econômico e cultural de São Paulo.',0,5.00,'00000000001',-23548761,-46638590,'2026-06-19 00:00:00');
+          ('Qoya São Paulo Paulista, Curio Collection by Hilton','O Qoya Hotel traz os conceitos de tranquilidade e bem-estar em conjunto com o melhor do design e da arquitetura para o equilíbrio completo da sua estada em meio ao principal ícone econômico e cultural de São Paulo.',0,5.00,'00000000001',-23548761,-46638590,'2026-06-19 00:00:00'),
+          ('Hotel Moov Porto Alegre','O Hotel Moov Porto Alegre é uma releitura do Cine Orpheu fundado em 1923, onde mais tarde passou a se chamar Cine Astor Com sua fachada imponente e completamente restaurada, o Hotel foi construído mantendo as características históricas e, por trás um hotel moderno com 156 apartamentos, com tecnologias avançadas na construção civil na cidade de Porto Alegre proporcionando uma estadia confortável e acolhedora aos hospedes Dentre suas características, destaca- se uma localização privilegiada próximo aos principais centros comerciais e empresariais da cidade, ficando apenas 4,5km do Aeroporto Internacional Porto Alegre Salgado Filho,',0,5.00,'00000000001',-23548761,-46638590,'2026-06-19 00:00:00');
 
 INSERT INTO ImagemHotel (CodigoHotel, Url)
     VALUES (1, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'),
@@ -197,12 +198,15 @@ INSERT INTO ImagemHotel (CodigoHotel, Url)
            (2, 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'),
            (2, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'),
            (3, 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=800&q=80'),
-           (3, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80');
+           (3, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'),
+           (4, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'),
+           (4, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80');
 
 INSERT INTO Quarto (Numero, Tipo, Preco, Capacidade, Descricao, AceitaPet, Disponivel, DataCriacao, CodigoHotel)
     VALUES (101, 'simples', 350.00, 2, 'Quarto casal standard.', 0, 1, '2026-06-19 00:00:00', 1),
            (201, 'suite', 580.00, 2, 'SUPERIOR TWIN 2 PAX ', 1, 1, '2026-06-19 00:00:00', 2),
-           (301, 'suite', 900.00, 2, 'Suíte executiva.', 1, 1, '2026-06-19 00:00:00', 3);
+           (301, 'suite', 900.00, 2, 'Suíte executiva.', 1, 1, '2026-06-19 00:00:00', 3),
+           (301, 'standard', 900.00, 2, 'standard double room.', 1, 1, '2026-06-19 00:00:00', 4);
 
 INSERT INTO ImagemQuarto (Numero, CodigoHotel, Url)
     VALUES (101, 1, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'),
@@ -210,19 +214,23 @@ INSERT INTO ImagemQuarto (Numero, CodigoHotel, Url)
            (201, 2, 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80'),
            (201, 2, 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'),
            (301, 3, 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'),
-           (301, 3, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80');
+           (301, 3, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'),
+           (301, 4, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80'),
+           (301, 4, 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80');
 
 INSERT INTO Oferta
     (UrlOrigem, DataCheckIn, DataCheckOut, Preco, Numero,CodigoHotel)
     VALUES ('https://all.accor.com/booking/pt/accor/hotel/3147?dateIn=2026-07-15&nights=4&compositions=2&stayplus=false&snu=false&accessibleRooms=false&hideWDR=false&productCode=null&hideHotelDetails=false&utm_campaign=desktop-15072026-2-4-0&trv_reference=863a7db5-e2a3-31a2-94db-231e103eaeb7&utm_medium=partenariats&hmGUID=edcbf907-13be-43da-b71c-3081c67af78b&locale=BR&utm_source=Trivago&utm_content=BR-BR-BR-ALL&advertiser_id=247','2026-06-15','2026-06-19',620.00,101,1),
            ('https://maistrip.com/#/busca/hotel/1%7C254181/0/15-07-2026/19-07-2026/7/2/?trackingToken=e7d7bae9608b43488c38070e37cb03f008_06_2026_18_18_10&origin=trivago&trv_reference=b8121744-f68a-3a92-822d-93bd44a185e9','2026-07-16','2026-07-20',2900.00,201,2),
-           ('https://ourtrip.com.br/pt_BR/hotel/110088?distribution=2&checkin=2026-07-15&checkout=2026-07-19&destination=Qoya+S%C3%A3o+Paulo+Paulista%2C+Curio+Collection+by+Hilton&code=110088&group=HOTEL&UTM_SOURCE=TRIVAGO&UTM_PARAMS=7cba4764194a64d135d1d72ac5625f114d9094482edec034cd6f91ce55472c14&currency=BRL&pp=ec10dac4-c41d-412c-bea9-7edbcb1cea45&trv_ref=c58e2dfd-af8d-31ef-9797-9bad490bcdb1&pos=BR','2026-08-17','2026-08-21',2545.72,301,3);
+           ('https://ourtrip.com.br/pt_BR/hotel/110088?distribution=2&checkin=2026-07-15&checkout=2026-07-19&destination=Qoya+S%C3%A3o+Paulo+Paulista%2C+Curio+Collection+by+Hilton&code=110088&group=HOTEL&UTM_SOURCE=TRIVAGO&UTM_PARAMS=7cba4764194a64d135d1d72ac5625f114d9094482edec034cd6f91ce55472c14&currency=BRL&pp=ec10dac4-c41d-412c-bea9-7edbcb1cea45&trv_ref=c58e2dfd-af8d-31ef-9797-9bad490bcdb1&pos=BR','2026-08-17','2026-08-21',2545.72,301,3),
+           ('https://ourtrip.com.br/pt_BR/hotel/110088?distribution=2&checkin=2026-07-15&checkout=2026-07-19&destination=Qoya+S%C3%A3o+Paulo+Paulista%2C+Curio+Collection+by+Hilton&code=110088&group=HOTEL&UTM_SOURCE=TRIVAGO&UTM_PARAMS=7cba4764194a64d135d1d72ac5625f114d9094482edec034cd6f91ce55472c14&currency=BRL&pp=ec10dac4-c41d-412c-bea9-7edbcb1cea45&trv_ref=c58e2dfd-af8d-31ef-9797-9bad490bcdb1&pos=BR','2026-08-17','2026-08-21',2545.72,301,4);
 
 INSERT INTO Avaliacao
     (Nota, Comentario, Data, Resposta, CodigoHotel, CPF)
     VALUES(4.8,'Excelente localização e atendimento.','2026-06-19','Obrigado!',1,'12345678900'),
           (4.3,'Legalzinho.','2026-08-15','Esperamos recebê-lo novamente.',2,'12345678900'),
-          (5.0,'Experiência Insana.','2026-09-10','Ficamos felizes com sua avaliação.',3,'12345678900');
+          (5.0,'Experiência Insana.','2026-09-10','Ficamos felizes com sua avaliação.',3,'12345678900'),
+          (5.0,'Experiência Insana.','2026-09-10','Ficamos felizes com sua avaliação.',4,'12345678900');
 
 INSERT INTO Salva
     VALUES ('12345678900', 1),

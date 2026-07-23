@@ -25,7 +25,7 @@
     </header>
 
     <div class="container breadcrumb-trail">
-        <p>Home &gt; Hotéis &gt; Grand Luxury Hotel & Spa &gt; <span id="breadRoomName"
+        <p>Home &gt; Hotéis &gt; <span th:text="${hotel != null ? hotel.nome : 'Hotel'}">Hotel</span> &gt; <span id="breadRoomName"
                 th:text="${quarto != null ? quarto.descricao : 'Quarto disponível.'}">Descrição do quarto</span></p>
     </div>
 
@@ -75,74 +75,45 @@
                     </div>
                 </div>
 
-                <div class="room-comparison-box">
+                <div class="room-comparison-box"
+                    th:attr="data-codigo-hotel=${quarto != null ? quarto.codigoHotel : ''}, data-numero=${quarto != null ? quarto.numero : ''}">
                     <h3>Compare preços em diferentes plataformas</h3>
-                    <div class="offers-stack">
 
-                        <div class="offer-card-row">
-                            <div class="platform-meta">
-                                <span class="platform-logo-mock booking-color">B.com</span>
+                    <div class="offers-loading" id="offersLoading" style="display:none;">
+                        <div class="spinner"></div>
+                        <p>Buscando as melhores ofertas...</p>
+                    </div>
+
+                    <div class="offers-stack" id="offersStack"
+                        th:style="${ofertas != null and !ofertas.isEmpty() ? '' : 'display:none;'}">
+
+                        <div class="offer-card-row" th:each="oferta, stat : ${ofertas}">
+                            <div class="platform-meta" style="gap:0;">
+                                <span class="platform-logo-mock booking-color" style="padding: 15px;margin-right: 20px;width: auto;height: auto;" th:text="${oferta.parceiro}">Parceiro</span>
                                 <div>
-                                    <h4>Booking.com <span class="badge-best-choice">Melhor preço</span></h4>
-                                    <p class="rating-sub text-blue"><i class="fa-solid fa-star"></i> 9.2
-                                        &nbsp;&bull;&nbsp; 1.240 avaliações</p>
-                                    <p class="perks-text">&check; Cancelamento grátis &nbsp;&bull;&nbsp; &check; Café da
-                                        manhã incluso</p>
+                                    <h4><span th:text="${oferta.parceiro}">Parceiro</span>
+                                        <span class="badge-best-choice" th:if="${stat.index == 0}">Melhor preço</span>
+                                    </h4>
+                                    <p class="perks-text" th:if="${oferta.atributos != null and !oferta.atributos.isEmpty() and !oferta.atributos.contains('_')}" th:text="''">
+                                        <span th:each="atributo : ${oferta.atributos}" th:text="${atributo + ' '}">atributo</span>
+                                    </p>
+                                    <p class="perks-text" th:if="${oferta.quarto != null}" th:text="${oferta.quarto}">Nome do quarto na oferta</p>
                                 </div>
                             </div>
                             <div class="platform-pricing-action">
                                 <div class="price-stack">
-                                    <span class="old-price">R$ 720</span>
-                                    <span class="current-price"
-                                        th:text="${quarto != null ? 'R$ ' + quarto.preco : 'R$ 0'}">R$
-                                        0<small>/noite</small></span>
-                                    <small class="tax-info">+ R$ 50 taxas</small>
+                                    <span class="current-price" th:text="${oferta.precoNoite + '/noite'}">R$ 0<small>/noite</small></span>
+                                    <small class="tax-info" th:text="'Total: ' + ${oferta.precoTotal}">Total</small>
                                 </div>
-                                <button class="btn-redirect-offer" data-url="https://www.booking.com">Ver
-                                    oferta</button>
+                                <button class="btn-redirect-offer" th:attr="data-url=${oferta.url}"
+                                    th:text="${oferta.botao != null ? 'Ver oferta' : 'Ver oferta'}">Ver oferta</button>
                             </div>
                         </div>
 
-                        <div class="offer-card-row">
-                            <div class="platform-meta">
-                                <span class="platform-logo-mock expedia-color">Expedia</span>
-                                <div>
-                                    <h4>Expedia</h4>
-                                    <p class="rating-sub"><i class="fa-solid fa-star"></i> 8.8 &nbsp;&bull;&nbsp; 950
-                                        avaliações</p>
-                                    <p class="perks-text">&check; Cancelamento grátis</p>
-                                </div>
-                            </div>
-                            <div class="platform-pricing-action">
-                                <div class="price-stack">
-                                    <span class="current-price">R$ 680<small>/noite</small></span>
-                                    <small class="tax-info">+ R$ 55 taxas</small>
-                                </div>
-                                <button class="btn-redirect-offer" data-url="https://www.expedia.com">Ver
-                                    oferta</button>
-                            </div>
-                        </div>
-
-                        <div class="offer-card-row">
-                            <div class="platform-meta">
-                                <span class="platform-logo-mock decolar-color">Decolar</span>
-                                <div>
-                                    <h4>Decolar</h4>
-                                    <p class="rating-sub"><i class="fa-solid fa-star"></i> 8.5 &nbsp;&bull;&nbsp; 587
-                                        avaliações</p>
-                                    <p class="perks-text">&bull; Parcelamento 12x</p>
-                                </div>
-                            </div>
-                            <div class="platform-pricing-action">
-                                <div class="price-stack">
-                                    <span class="current-price">R$ 695<small>/noite</small></span>
-                                    <small class="tax-info">+ R$ 60 taxas</small>
-                                </div>
-                                <button class="btn-redirect-offer" data-url="https://www.decolar.com">Ver
-                                    oferta</button>
-                            </div>
-                        </div>
-
+                    </div>
+                    <div class="offers-empty-state" id="offersEmptyState"
+                        th:style="${ofertas != null and !ofertas.isEmpty() ? 'display:none;' : ''}">
+                        <p>Nenhuma oferta encontrada no momento.</p>
                     </div>
                 </div>
 
@@ -151,8 +122,8 @@
             <aside class="room-sticky-booking-sidebar">
                 <div class="sticky-price-box">
                     <small>Melhor preço encontrado</small>
-                    <h2 th:text="${quarto != null ? 'R$ ' + quarto.preco : 'R$ 0'}">R$ 0<small>/noite</small></h2>
-                    <p class="provider-tag">via Booking.com</p>
+                    <h2 id="melhorPrecoNoite" th:text="${(ofertas != null and !ofertas.isEmpty() ? ofertas[0].precoNoite : (quarto != null ? 'R$ ' + quarto.preco : 'R$ 0')) + '/noite'}">R$ 0<small>/noite</small></h2>
+                    <p class="provider-tag" id="melhorPrecoParceiro" th:text="${ofertas != null and !ofertas.isEmpty() ? 'via ' + ofertas[0].parceiro : 'Sem ofertas disponíveis'}">via Booking.com</p>
                 </div>
                 <div class="sticky-booking-form">
                     <div class="search-bar" style="border: none;box-shadow: none;padding: 0;gap: 0;">
@@ -164,7 +135,7 @@
                             </svg>
                             <div>
                                 <label>Check-in</label>
-                                <input type="date" id="checkin">
+                                <input type="date" id="checkin" th:value="${checkinResolvido}">
                             </div>
                         </div>
 
@@ -176,14 +147,14 @@
                             </svg>
                             <div>
                                 <label>Check-out</label>
-                                <input type="date" id="checkout">
+                                <input type="date" id="checkout" th:value="${checkoutResolvido}">
                             </div>
                         </div>
                     </div>
 
                     <div class="search-bar"
-                        style="border: 0;place-items: center;box-shadow: none;width: 100%;margin-bottom: 0;padding: 0;margin-top: 20px;display-grid: 0;display: inline-block;">
-                        <div class="search-input-group" style="gap:0;width: fit-content;/* width: 100%; */">
+                        style="display:none;border: 0;place-items: center;box-shadow: none;width: 100%;margin-bottom: 0;padding: 0;margin-top: 20px;display-grid: 0;display: inline-block;">
+                        <div class="search-input-group" style="gap:0;display:none;width: fit-content;/* width: 100%; */">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" width="50" height="40"
                                 fill="#3B82F6"><!--!Font Awesome Free v7.3.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2026 Fonticons, Inc.-->
                                 <path
@@ -192,17 +163,18 @@
                             </svg>
                             <div>
                                 <label>Hóspedes</label>
-                                <input type="number" value="2" min="1">
+                                <input type="number" th:value="${pessoasResolvido}" value="2" min="1">
                             </div>
                         </div>
                     </div>
-                    <div class="booking-summary-calc">
-                        <div class="calc-row"><span>R$ 650 x 3 noites</span><span>R$ 1.950</span></div>
-                        <div class="calc-row"><span>Taxas e impostos</span><span>R$ 80</span></div>
+                    <div class="booking-summary-calc" id="bookingSummaryCalc"
+                        th:style="${ofertas != null and !ofertas.isEmpty() ? '' : 'display:none;'}">
+                        <div class="calc-row"><span id="calcLinhaNoites" th:text="${ofertas != null and !ofertas.isEmpty() ? ofertas[0].precoNoite + ' x ' + noites + ' noites' : ''}">R$ 0 x 0 noites</span><span id="calcLinhaTotal" th:text="${ofertas != null and !ofertas.isEmpty() ? ofertas[0].precoTotal : ''}">R$ 0</span></div>
                         <hr>
-                        <div class="calc-row total"><span>Total</span><span>R$ 2.030</span></div>
+                        <div class="calc-row total"><span>Total</span><span id="calcTotalGeral" th:text="${ofertas != null and !ofertas.isEmpty() ? ofertas[0].precoTotal : ''}">R$ 0</span></div>
                     </div>
-                    <button class="btn-checkout-redirect" id="btnMainRedirect">Ir para a página</button>
+                    <button class="btn-checkout-redirect" style="margin-top: 20px;" id="btnMainRedirect"
+                        th:attr="data-url=${ofertas != null and !ofertas.isEmpty() ? ofertas[0].url : null}">Ir para a página</button>
                     <p class="secure-checkout-notice"><i class="fa-solid fa-shield-halved"></i> Melhor preço garantido
                         &bull; Cancelamento grátis</p>
                 </div>
